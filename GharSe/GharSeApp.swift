@@ -12,7 +12,8 @@ struct GharSeApp: App {
     @StateObject var cartManager = CartManager() // single global instance
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
+            let viewModel = OnboardingViewModel(dto: OnboardingDTO())
+            OnboardingView(viewModel: viewModel)
                 .environmentObject(cartManager) // pass it to onboarding
         }
     }

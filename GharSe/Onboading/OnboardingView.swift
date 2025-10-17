@@ -9,25 +9,26 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject var cartManager: CartManager
+    let viewModel: OnboardingViewModel
     var body: some View {
         NavigationStack {
             VStack(spacing: 40) {
                 Spacer()
                 
                 // App logo or welcome image
-                Image(systemName: "star.fill")
+                Image(systemName: viewModel.dto.logo)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
                     .foregroundColor(.blue)
                 
                 // Welcome text
-                Text("Ghar se")
+                Text(viewModel.dto.title)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
                 
-                Text("Experience the best features and stay connected.")
+                Text(viewModel.dto.description)
                     .font(.body)
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
@@ -38,7 +39,7 @@ struct OnboardingView: View {
                 // Buttons
                 VStack(spacing: 20) {
                     NavigationLink(destination: HomeView().environmentObject(cartManager)) {
-                        Text("Continue as a Buyer")
+                        Text(viewModel.dto.primaryButtonTitle)
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -49,7 +50,7 @@ struct OnboardingView: View {
                     
                     
                     NavigationLink(destination: HomeView().environmentObject(cartManager)) {
-                        Text("Continue as a Seller")
+                        Text(viewModel.dto.secondaryButtonTitle)
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -65,9 +66,14 @@ struct OnboardingView: View {
             .padding()
         }
     }
+    
+    init(viewModel: OnboardingViewModel) {
+        self.viewModel = viewModel
+    }
 }
 
 
 #Preview {
-    OnboardingView()
+    let dto = OnboardingDTO()
+    OnboardingView(viewModel: OnboardingViewModel(dto: dto))
 }
