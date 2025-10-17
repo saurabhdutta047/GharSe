@@ -71,9 +71,3 @@ struct OnboardingView: View {
         self.viewModel = viewModel
     }
 }
-
-
-#Preview {
-    let dto = OnboardingDTO()
-    OnboardingView(viewModel: OnboardingViewModel(dto: dto))
-}

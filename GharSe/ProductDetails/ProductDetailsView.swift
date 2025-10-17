@@ -7,42 +7,6 @@
 
 import SwiftUI
 
-// Cart Item
-struct CartItem: Identifiable {
-    let id = UUID()
-    let product: Product
-    var quantity: Int
-}
-
-// Cart Manager
-class CartManager: ObservableObject {
-    @Published var items: [CartItem] = []
-    
-    // Add product
-    func addToCart(product: Product) {
-        if let index = items.firstIndex(where: { $0.product.id == product.id }) {
-            items[index].quantity += 1
-        } else {
-            items.append(CartItem(product: product, quantity: 1))
-        }
-    }
-    
-    // Remove product
-    func removeFromCart(item: CartItem) {
-        if let index = items.firstIndex(where: { $0.id == item.id }) {
-            items.remove(at: index)
-        }
-    }
-    
-    // Total price
-    var totalPrice: Double {
-        items.reduce(0) { total, item in
-            let price = Double(item.product.price.replacingOccurrences(of: "$", with: "")) ?? 0
-            return total + price * Double(item.quantity)
-        }
-    }
-}
-
 struct ProductDetailsView: View {
     let product: Product
     @EnvironmentObject var cartManager: CartManager
@@ -179,8 +143,4 @@ struct ProductDetailsView: View {
             }
         }
     }
-}
-
-#Preview {
-    ProductDetailsView(product: Product(name: "Apple", price: "$1.5", imageName: "applelogo", category: "Fruits"))
 }
