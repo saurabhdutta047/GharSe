@@ -71,3 +71,7 @@ struct OnboardingView: View {
         self.viewModel = viewModel
     }
 }
+
+#Preview {
+    OnboardingView(viewModel: OnboardingViewModel(dto: OnboardingDTO()))
+}

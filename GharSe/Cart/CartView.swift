@@ -19,39 +19,52 @@ struct CartView: View {
             } else {
                 List {
                     ForEach(cartManager.items) { item in
-                        HStack {
+                        HStack(spacing: 12) {
+                            // Product name
                             Text(item.product.name)
+                                .font(.body)
                                 .lineLimit(1)
-                            
-                            Spacer()
-                            
+                                .truncationMode(.tail)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
                             // Quantity controls
-                            HStack(spacing: 10) {
-                                Button(action: {
+                            HStack(spacing: 12) {
+                                Button {
                                     if item.quantity > 1 {
                                         updateQuantity(for: item, change: -1)
                                     }
-                                }) {
-                                    Image(systemName: "minus.circle")
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .font(.system(size: 22))
                                         .foregroundColor(.blue)
-                                        .font(.title3)
+                                        .frame(width: 36, height: 36)
                                 }
-                                
+                                .buttonStyle(BorderlessButtonStyle()) // <— Important fix
+
                                 Text("\(item.quantity)")
-                                    .frame(width: 25)
-                                
-                                Button(action: {
+                                    .font(.body)
+                                    .frame(width: 28)
+
+                                Button {
                                     updateQuantity(for: item, change: 1)
-                                }) {
-                                    Image(systemName: "plus.circle")
+                                } label: {
+                                    Image(systemName: "plus.circle.fill")
+                                        .font(.system(size: 22))
                                         .foregroundColor(.blue)
-                                        .font(.title3)
+                                        .frame(width: 36, height: 36)
                                 }
+                                .buttonStyle(BorderlessButtonStyle()) // <— Important fix
                             }
-                            
+
+                            // Price
                             Text(item.product.price)
-                                .padding(.leading, 10)
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .frame(width: 70, alignment: .trailing)
                         }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                        
                     }
                     .onDelete { indexSet in
                         indexSet.forEach { index in
