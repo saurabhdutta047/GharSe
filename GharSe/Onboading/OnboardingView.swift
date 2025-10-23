@@ -15,24 +15,7 @@ struct OnboardingView: View {
             VStack(spacing: 40) {
                 Spacer()
                 
-                // App logo or welcome image
-                Image(systemName: viewModel.dto.logo)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 120, height: 120)
-                    .foregroundColor(.blue)
-                
-                // Welcome text
-                Text(viewModel.dto.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.center)
-                
-                Text(viewModel.dto.description)
-                    .font(.body)
-                    .foregroundColor(.gray)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                AppInformation(logo: viewModel.dto.logo, title: viewModel.dto.title, description: viewModel.dto.description)
                 
                 Spacer()
                 
