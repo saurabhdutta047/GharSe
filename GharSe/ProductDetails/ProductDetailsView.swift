@@ -146,7 +146,6 @@ struct ProductDetailsView: View {
 }
 
 #Preview {
-    var product = Product(name: "Apple", price: "$1.5", imageName: "applelogo", category: "Fruits")
-    ProductDetailsView(product: product)
+    ProductDetailsView(product: Product(name: "Apple", price: "$1.5", imageName: "applelogo", category: "Fruits"))
         .environmentObject(CartManager.preview)
 }
