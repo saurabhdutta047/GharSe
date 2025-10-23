@@ -10,17 +10,24 @@ import SwiftUI
 struct OnboardingView: View {
     @EnvironmentObject var cartManager: CartManager
     let viewModel: OnboardingViewModel
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 40) {
                 Spacer()
                 
-                OnboardingContentView(logo: viewModel.dto.logo, title: viewModel.dto.title, description: viewModel.dto.description)
+                // Onboarding content
+                OnboardingContentView(
+                    logo: viewModel.dto.logo,
+                    title: viewModel.dto.title,
+                    description: viewModel.dto.description
+                )
                 
                 Spacer()
                 
                 // Buttons
-                VStack(spacing: 20) {
+                VStack(spacing: 16) {
+                    // Primary Button
                     NavigationLink(destination: HomeView().environmentObject(cartManager)) {
                         Text(viewModel.dto.primaryButtonTitle)
                             .fontWeight(.semibold)
@@ -30,8 +37,8 @@ struct OnboardingView: View {
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
-                    
-                    
+
+                    // Secondary Button
                     NavigationLink(destination: HomeView().environmentObject(cartManager)) {
                         Text(viewModel.dto.secondaryButtonTitle)
                             .fontWeight(.semibold)
@@ -42,7 +49,7 @@ struct OnboardingView: View {
                             .cornerRadius(10)
                     }
                 }
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 20)
                 
                 Spacer()
             }

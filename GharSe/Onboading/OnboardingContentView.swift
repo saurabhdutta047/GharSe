@@ -1,43 +1,46 @@
-//
-//  OnboardingContentView.swift
-//  GharSe
-//
-//  Created by Saurabh Dutta on 23/10/25.
-//
-
 import SwiftUI
 
 struct OnboardingContentView: View {
     var logo: String
     var title: String
     var description: String
+    var logoColor: Color = .blue
+    var spacing: CGFloat = 20
+    
     var body: some View {
-        VStack(spacing: 10){
+        VStack(spacing: spacing) {
             // App logo
             Image(systemName: logo)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 120, height: 120)
-                .foregroundColor(.blue)
+                .foregroundColor(logoColor)
             
-            // Welcome text
+            // Title text
             Text(title)
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8) // ensures title scales on smaller devices
             
+            // Description text
             Text(description)
                 .font(.body)
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
+                .padding(.horizontal, 30) // consistent horizontal padding
         }
+        .padding(.vertical, 40)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground)) // ensures proper background in light/dark mode
     }
 }
 
 #Preview {
-    let logo = "star.fill"
-    let title = "Ghar se"
-    let description = "Experience the best features and stay connected."
-    OnboardingContentView(logo: logo, title: title, description: description)
+    OnboardingContentView(
+        logo: "star.fill",
+        title: "GharSe",
+        description: "Experience the best features and stay connected."
+    )
 }
