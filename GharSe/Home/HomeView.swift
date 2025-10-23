@@ -208,4 +208,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environmentObject(CartManager.preview)
 }

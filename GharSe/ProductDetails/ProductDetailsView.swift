@@ -144,3 +144,9 @@ struct ProductDetailsView: View {
         }
     }
 }
+
+#Preview {
+    var product = Product(name: "Apple", price: "$1.5", imageName: "applelogo", category: "Fruits")
+    ProductDetailsView(product: product)
+        .environmentObject(CartManager.preview)
+}

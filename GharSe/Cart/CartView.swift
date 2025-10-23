@@ -19,7 +19,7 @@ struct CartView: View {
             } else {
                 List {
                     ForEach(cartManager.items) { item in
-                        HStack(spacing: 12) {
+                        HStack(spacing: 5) {
                             // Product name
                             Text(item.product.name)
                                 .font(.body)
@@ -36,24 +36,22 @@ struct CartView: View {
                                 } label: {
                                     Image(systemName: "minus.circle.fill")
                                         .font(.system(size: 22))
-                                        .foregroundColor(.blue)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 30, height: 30)
                                 }
-                                .buttonStyle(BorderlessButtonStyle()) // <— Important fix
+                                .buttonStyle(BorderlessButtonStyle())
 
                                 Text("\(item.quantity)")
                                     .font(.body)
-                                    .frame(width: 28)
+                                    .frame(width: 22)
 
                                 Button {
                                     updateQuantity(for: item, change: 1)
                                 } label: {
                                     Image(systemName: "plus.circle.fill")
                                         .font(.system(size: 22))
-                                        .foregroundColor(.blue)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 30, height: 30)
                                 }
-                                .buttonStyle(BorderlessButtonStyle()) // <— Important fix
+                                .buttonStyle(BorderlessButtonStyle())
                             }
 
                             // Price
@@ -62,8 +60,7 @@ struct CartView: View {
                                 .fontWeight(.medium)
                                 .frame(width: 70, alignment: .trailing)
                         }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 5)
                         
                     }
                     .onDelete { indexSet in
@@ -93,4 +90,9 @@ struct CartView: View {
             cartManager.items[index].quantity = max(newQuantity, 1)
         }
     }
+}
+
+#Preview {
+    CartView()
+            .environmentObject(CartManager.preview)
 }

@@ -35,3 +35,19 @@ class CartManager: ObservableObject {
         }
     }
 }
+
+// Mock data - Not to be used for app. Just for previews
+extension CartManager {
+    static var preview: CartManager {
+        let manager = CartManager()
+        manager.items = [
+            CartItem(product:
+                        Product(name: "Apple", price: "$20.0", imageName: "", category: "Fruits"),
+                     quantity: 2),
+            CartItem(product:
+                        Product(name: "Mango", price: "$40.0", imageName: "", category: "Fruits"),
+                     quantity: 3)
+        ]
+        return manager
+    }
+}
