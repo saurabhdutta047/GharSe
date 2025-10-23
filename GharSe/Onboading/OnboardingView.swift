@@ -15,7 +15,7 @@ struct OnboardingView: View {
             VStack(spacing: 40) {
                 Spacer()
                 
-                AppInformation(logo: viewModel.dto.logo, title: viewModel.dto.title, description: viewModel.dto.description)
+                OnboardingContentView(logo: viewModel.dto.logo, title: viewModel.dto.title, description: viewModel.dto.description)
                 
                 Spacer()
                 

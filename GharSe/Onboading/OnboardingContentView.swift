@@ -1,5 +1,5 @@
 //
-//  AppInformation.swift
+//  OnboardingContentView.swift
 //  GharSe
 //
 //  Created by Saurabh Dutta on 23/10/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AppInformation: View {
+struct OnboardingContentView: View {
     var logo: String
     var title: String
     var description: String
@@ -39,5 +39,5 @@ struct AppInformation: View {
     let logo = "star.fill"
     let title = "Ghar se"
     let description = "Experience the best features and stay connected."
-    AppInformation(logo: logo, title: title, description: description)
+    OnboardingContentView(logo: logo, title: title, description: description)
 }
