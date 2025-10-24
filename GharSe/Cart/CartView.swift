@@ -55,7 +55,7 @@ struct CartView: View {
                             }
 
                             // Price
-                            Text(item.product.price)
+                            Text(item.product.price, format: .currency(code: "INR"))
                                 .font(.body)
                                 .fontWeight(.medium)
                                 .frame(width: 70, alignment: .trailing)

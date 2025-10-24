@@ -30,7 +30,8 @@ struct ProductDetailsView: View {
                 .font(.title)
                 .fontWeight(.bold)
             
-            Text(product.price)
+
+            Text(product.price, format: .currency(code: "INR"))
                 .font(.title2)
                 .foregroundColor(.gray)
             
@@ -146,6 +147,6 @@ struct ProductDetailsView: View {
 }
 
 #Preview {
-    ProductDetailsView(product: Product(name: "Apple", price: "$1.5", imageName: "applelogo", category: "Fruits"))
+    ProductDetailsView(product: Product(name: "Apple", price: 150.0, imageName: "applelogo", category: "Fruits"))
         .environmentObject(CartManager.preview)
 }

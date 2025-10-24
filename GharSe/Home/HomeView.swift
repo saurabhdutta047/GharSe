@@ -13,10 +13,10 @@ struct Category: Identifiable {
     let name: String
 }
 
-struct Product: Identifiable {
+struct Product: Identifiable, Hashable {
     let id = UUID()
     let name: String
-    let price: String
+    let price: Double
     let imageName: String
     let category: String
 }
@@ -31,35 +31,33 @@ let categories = [
 ]
 
 let products = [
-    Product(name: "Apple", price: "$1.5", imageName: "applelogo", category: "Fruits"),
-    Product(name: "Orange", price: "$1.8", imageName: "sun.max.fill", category: "Fruits"),
-    Product(name: "Milk", price: "$0.99", imageName: "drop.fill", category: "Dairy"),
-    Product(name: "Bread", price: "$2.0", imageName: "bag.fill", category: "Dairy"),
-    Product(name: "Chips", price: "$1.2", imageName: "leaf.fill", category: "Snacks")
+    Product(name: "Apple", price: 130.0, imageName: "applelogo", category: "Fruits"),
+    Product(name: "Orange", price: 80.0, imageName: "sun.max.fill", category: "Fruits"),
+    Product(name: "Milk", price: 29.0, imageName: "drop.fill", category: "Dairy"),
+    Product(name: "Bread", price: 45.0, imageName: "bag.fill", category: "Dairy"),
+    Product(name: "Chips", price: 10.0, imageName: "leaf.fill", category: "Snacks")
 ]
 
 // Home Page View
+import SwiftUI
+
 struct HomeView: View {
     @EnvironmentObject var cartManager: CartManager
-    @State private var selectedCategory: String? = nil
+    @State private var selectedProduct: Product? = nil
     @State private var searchText = ""
-    
+    @State private var selectedCategory: String? = nil
+
     var filteredProducts: [Product] {
         products.filter { product in
             (selectedCategory == nil || product.category == selectedCategory) &&
             (searchText.isEmpty || product.name.lowercased().contains(searchText.lowercased()))
         }
     }
-    
-    // Total items in cart
-    private var totalCartItems: Int {
-        cartManager.items.reduce(0) { $0 + $1.quantity }
-    }
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 20) {
                     // Search Bar
                     TextField("Search products...", text: $searchText)
                         .padding(12)
@@ -67,91 +65,35 @@ struct HomeView: View {
                         .cornerRadius(10)
                         .padding(.horizontal)
                         .padding(.top)
-                    
+
                     // Categories
-                    Text("Categories")
-                        .font(.headline)
-                        .padding(.horizontal)
-                        .padding(.top)
-                    
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
                             Button(action: { selectedCategory = nil }) {
                                 Text("All")
-                                    .padding(.vertical, 10)
-                                    .padding(.horizontal, 20)
-                                    .background(selectedCategory == nil ? Color.blue : Color.blue.opacity(0.2))
-                                    .foregroundColor(selectedCategory == nil ? .white : .blue)
-                                    .cornerRadius(20)
+                                    .categoryStyle(isSelected: selectedCategory == nil)
                             }
-                            
+
                             ForEach(categories) { category in
                                 Button(action: { selectedCategory = category.name }) {
                                     Text(category.name)
-                                        .padding(.vertical, 10)
-                                        .padding(.horizontal, 20)
-                                        .background(selectedCategory == category.name ? Color.blue : Color.blue.opacity(0.2))
-                                        .foregroundColor(selectedCategory == category.name ? .white : .blue)
-                                        .cornerRadius(20)
+                                        .categoryStyle(isSelected: selectedCategory == category.name)
                                 }
                             }
                         }
                         .padding(.horizontal)
                     }
-                    
+
                     // Products Grid
-                    Text("Products")
-                        .font(.headline)
-                        .padding([.horizontal, .top])
-                    
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                         ForEach(filteredProducts) { product in
-                            VStack(alignment: .leading, spacing: 10) {
-                                NavigationLink(destination: ProductDetailsView(product: product).environmentObject(cartManager)) {
-                                    Image(systemName: product.imageName)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(height: 80)
-                                        .frame(maxWidth: .infinity)
-                                        .background(Color.gray.opacity(0.1))
-                                        .cornerRadius(10)
-                                        .foregroundColor(.primary)
-                                }
-                                
-                                Text(product.name)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.primary)
-                                
-                                Text(product.price)
-                                    .foregroundColor(.secondary)
-                                
-                                // Add to Cart Controls
-                                HStack(spacing: 10) {
-                                    Button(action: {
-                                        decrementQuantity(product: product)
-                                    }) {
-                                        Image(systemName: "minus.circle")
-                                            .foregroundColor(.blue)
-                                            .font(.title3)
-                                    }
-                                    
-                                    Text("\(currentQuantity(for: product))")
-                                        .frame(width: 25)
-                                    
-                                    Button(action: {
-                                        incrementQuantity(product: product)
-                                    }) {
-                                        Image(systemName: "plus.circle")
-                                            .foregroundColor(.blue)
-                                            .font(.title3)
-                                    }
-                                }
-                                .padding(.top, 5)
-                            }
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(15)
-                            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 5)
+                            ProductCardView(
+                                product: product,
+                                quantity: cartManager.quantity(for: product),
+                                onTap: { selectedProduct = product },
+                                onIncrement: { cartManager.addToCart(product: product) },
+                                onDecrement: { cartManager.decrement(product: product) }
+                            )
                         }
                     }
                     .padding(.horizontal)
@@ -161,48 +103,49 @@ struct HomeView: View {
             .navigationTitle("Home")
             .toolbar {
                 NavigationLink(destination: CartView().environmentObject(cartManager)) {
-                    ZStack {
-                        Image(systemName: "cart.fill")
-                            .font(.title2)
-                        
-                        if totalCartItems > 0 {
-                            Text("\(totalCartItems)")
-                                .font(.caption2)
-                                .foregroundColor(.white)
-                                .padding(5)
-                                .background(Color.red)
-                                .clipShape(Circle())
-                                .offset(x: 12, y: -10) // slightly adjusted offset
-                        }
-                    }
-                    .frame(width: 44, height: 44) // ensures enough tappable area
+                    CartBadgeView(totalItems: cartManager.items.reduce(0) { $0 + $1.quantity })
                 }
             }
-        }
-    }
-    
-    // MARK: - Quantity Helpers
-    private func currentQuantity(for product: Product) -> Int {
-        cartManager.items.first(where: { $0.product.id == product.id })?.quantity ?? 0
-    }
-
-    private func incrementQuantity(product: Product) {
-        if let index = cartManager.items.firstIndex(where: { $0.product.id == product.id }) {
-            cartManager.items[index].quantity += 1
-        } else {
-            cartManager.addToCart(product: product)
-        }
-    }
-
-    private func decrementQuantity(product: Product) {
-        if let index = cartManager.items.firstIndex(where: { $0.product.id == product.id }) {
-            let newQuantity = max(cartManager.items[index].quantity - 1, 0)
-            if newQuantity == 0 {
-                cartManager.removeFromCart(item: cartManager.items[index])
-            } else {
-                cartManager.items[index].quantity = newQuantity
+            .navigationDestination(item: $selectedProduct) { product in
+                ProductDetailsView(product: product)
+                    .environmentObject(cartManager)
             }
         }
+    }
+}
+
+// Helpers
+
+extension Text {
+    func categoryStyle(isSelected: Bool) -> some View {
+        self
+            .padding(.vertical, 10)
+            .padding(.horizontal, 20)
+            .background(isSelected ? Color.blue : Color.blue.opacity(0.2))
+            .foregroundColor(isSelected ? .white : .blue)
+            .cornerRadius(20)
+    }
+}
+
+struct CartBadgeView: View {
+    let totalItems: Int
+
+    var body: some View {
+        ZStack {
+            Image(systemName: "cart.fill")
+                .font(.title2)
+
+            if totalItems > 0 {
+                Text("\(totalItems)")
+                    .font(.caption2)
+                    .foregroundColor(.white)
+                    .padding(5)
+                    .background(Color.red)
+                    .clipShape(Circle())
+                    .offset(x: 12, y: -10)
+            }
+        }
+        .frame(width: 44, height: 44)
     }
 }
 
